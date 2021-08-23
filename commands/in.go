@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	resource "github.com/concourse/registry-image-resource"
 	"github.com/fatih/color"
@@ -179,11 +180,13 @@ func get(principal resource.BasicCredentials, digest name.Digest) (v1.Image, err
 
 	imageOpts := []remote.Option{}
 
+	imageOpts = append(imageOpts, remote.WithPlatform(v1.Platform{
+		Architecture: runtime.GOARCH,
+		OS:           runtime.GOOS,
+	}))
+
 	if auth.Username != "" && auth.Password != "" {
-		imageOpts = append(imageOpts, remote.WithAuth(auth), remote.WithPlatform(v1.Platform{
-			Architecture: "arm",
-			OS:           "linux",
-		}))
+		imageOpts = append(imageOpts, remote.WithAuth(auth))
 	}
 
 	image, err := remote.Image(digest, imageOpts...)

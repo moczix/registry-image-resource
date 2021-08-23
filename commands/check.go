@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"runtime"
 
 	resource "github.com/concourse/registry-image-resource"
 	"github.com/google/go-containerregistry/pkg/authn"
@@ -115,11 +116,13 @@ func performCheck(principal resource.BasicCredentials, version *resource.Version
 
 	imageOpts := []remote.Option{}
 
+	imageOpts = append(imageOpts, remote.WithPlatform(v1.Platform{
+		Architecture: runtime.GOARCH,
+		OS:           runtime.GOOS,
+	}))
+
 	if auth.Username != "" && auth.Password != "" {
-		imageOpts = append(imageOpts, remote.WithAuth(auth), remote.WithPlatform(v1.Platform{
-			Architecture: "arm",
-			OS:           "linux",
-		}))
+		imageOpts = append(imageOpts, remote.WithAuth(auth))
 	}
 
 	digest, found, err := headOrGet(ref, imageOpts...)
