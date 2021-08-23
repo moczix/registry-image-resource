@@ -21,6 +21,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ecr/ecriface"
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
+	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/google/go-containerregistry/pkg/v1/remote/transport"
 	"github.com/sirupsen/logrus"
@@ -181,7 +182,10 @@ func (source Source) AuthOptions(repo name.Repository, scopeActions []string) ([
 		return nil, fmt.Errorf("initialize transport: %w", err)
 	}
 
-	return []remote.Option{remote.WithAuth(auth), remote.WithTransport(rt)}, nil
+	return []remote.Option{remote.WithAuth(auth), remote.WithTransport(rt), remote.WithPlatform(v1.Platform{
+		Architecture: "arm",
+		OS:           "linux",
+	})}, nil
 }
 
 type ContentTrust struct {
