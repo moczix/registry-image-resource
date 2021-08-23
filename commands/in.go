@@ -180,7 +180,10 @@ func get(principal resource.BasicCredentials, digest name.Digest) (v1.Image, err
 	imageOpts := []remote.Option{}
 
 	if auth.Username != "" && auth.Password != "" {
-		imageOpts = append(imageOpts, remote.WithAuth(auth))
+		imageOpts = append(imageOpts, remote.WithAuth(auth), remote.WithPlatform(v1.Platform{
+			Architecture: "arm",
+			OS:           "linux",
+		}))
 	}
 
 	image, err := remote.Image(digest, imageOpts...)

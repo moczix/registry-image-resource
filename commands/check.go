@@ -116,7 +116,10 @@ func performCheck(principal resource.BasicCredentials, version *resource.Version
 	imageOpts := []remote.Option{}
 
 	if auth.Username != "" && auth.Password != "" {
-		imageOpts = append(imageOpts, remote.WithAuth(auth))
+		imageOpts = append(imageOpts, remote.WithAuth(auth), remote.WithPlatform(v1.Platform{
+			Architecture: "arm",
+			OS:           "linux",
+		}))
 	}
 
 	digest, found, err := headOrGet(ref, imageOpts...)
