@@ -46,7 +46,7 @@ func (c *Check) Execute() error {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&req)
 	if err != nil {
-		return fmt.Errorf("invalid payload: %s", err)
+		return fmt.Errorf("invalid payload: %s, json: %s", err, c.stdin)
 	}
 
 	if req.Source.AwsAccessKeyId != "" && req.Source.AwsSecretAccessKey != "" && req.Source.AwsRegion != "" {
