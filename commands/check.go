@@ -43,7 +43,7 @@ func (c *Check) Execute() error {
 
 	var req resource.CheckRequest
 	decoder := json.NewDecoder(c.stdin)
-	decoder.DisallowUnknownFields()
+	//decoder.DisallowUnknownFields()
 	err := decoder.Decode(&req)
 	if err != nil {
 		return fmt.Errorf("invalid payload: %s, json: %s", err, c.stdin)
