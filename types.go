@@ -79,6 +79,8 @@ type RegistryMirror struct {
 type Source struct {
 	Repository string `json:"repository"`
 
+	Insecure bool `json:"insecure"`
+
 	PreReleases bool   `json:"pre_releases,omitempty"`
 	Variant     string `json:"variant,omitempty"`
 
@@ -186,6 +188,18 @@ func (source Source) AuthOptions(repo name.Repository, scopeActions []string) ([
 		Architecture: "arm",
 		OS:           "linux",
 	})}, nil
+}
+
+func (source Source) NewRepository() (name.Repository, error) {
+	return name.NewRepository(source.Repository, source.RepositoryOptions()...)
+}
+
+func (source Source) RepositoryOptions() []name.Option {
+	var opts []name.Option
+	if source.Insecure {
+		opts = append(opts, name.Insecure)
+	}
+	return opts
 }
 
 type ContentTrust struct {
